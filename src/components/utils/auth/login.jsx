@@ -1,27 +1,78 @@
 import React, { useState } from 'react';
-import RegisterModal from '../auth/RegisterMoldal';
-import { Form, Button, Modal, Col, Row } from 'react-bootstrap';
+import RegisterModal from '../auth/RegisterMoldal'; // Verifica el nombre y la ruta
+import RecovyPassword from './PasswordRecovery'; // Verifica el nombre y la ruta
+import { Form, Button, Modal, Col, Row, Alert } from 'react-bootstrap';
 import './stylesLogin.css';
 
-function LoginSignin({ isOpen, clickModal }) {
+function LoginSignin({ isOpen, closeLoginModal }) {
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
+  const [isRecoveryOpen, setIsRecoveryOpen] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
-  const clickRegister = () => {
-    setIsRegisterOpen(true);
+  const users = [
+    { email: 'admin@example.com', password: 'admin123', active: true },
+    { email: 'user@example.com', password: 'user123', active: true },
+    { email: 'inactive@example.com', password: 'inactive123', active: false },
+  ];
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+
+    const user = users.find(
+      (user) => user.email === email && user.password === password
+    );
+
+    if (!user) {
+      setError('Usuario no existe o inactivo');
+    } else if (!user.active) {
+      setError('Usuario no existe o inactivo');
+    } else {
+      setError('');
+      console.log('Login exitoso');
+      // Aquí podrías redirigir al usuario a otra página
+    }
   };
 
-  const closeRegister = () => {
+  const openRegisterModal = () => {
+    setIsRegisterOpen(true); // Abre el modal de registro
+  };
+
+  const openRecoveryModal = (e) => {
+    e.preventDefault(); // Evita que el enlace afecte el modal actual
+    setIsRecoveryOpen(true); // Abre el modal de recuperación de contraseña
+  };
+
+  const closeRegisterModal = () => {
     setIsRegisterOpen(false);
   };
 
+  const closeRecoveryModal = () => {
+    setIsRecoveryOpen(false);
+  };
+
+  const handleCloseLoginModal = () => {
+    if (typeof closeLoginModal === 'function') {
+      closeLoginModal(); // Llama a la función de cierre del modal
+    } else {
+      console.error('closeLoginModal no es una función');
+    }
+  };
+ 
   return (
     <>
-      <Modal show={isOpen} onHide={clickModal} centered size="lg">
+      <Modal show={isOpen} onHide={handleCloseLoginModal} centered size="lg">
         <Modal.Body>
-          <Button variant="danger" onClick={clickModal} style={{ float: 'right' }}>X</Button>
-          <Modal.Title className="text-center">Bienvenido al Registro</Modal.Title>
+          <Button 
+            variant="danger" 
+            onClick={handleCloseLoginModal} 
+            style={{ float: 'right', position: 'absolute', top: 10, right: 10, zIndex: 999 }}
+          >
+            X
+          </Button>
+          <Modal.Title className="text-center">Bienvenido al Inicio de Sesión</Modal.Title>
           <Row>
-            {/* Imagen grande ocupando la mitad del modal */}
             <Col md={6} className="image-col">
               <img 
                 src="/assets/loslagos.png" 
@@ -29,15 +80,18 @@ function LoginSignin({ isOpen, clickModal }) {
                 className="logo-img"
               />
             </Col>
-            {/* Formulario */}
             <Col md={6} className="form-col">
-              <Form>
+              {error && <Alert variant="danger">{error}</Alert>}
+              <Form onSubmit={handleLogin}>
                 <Form.Group className="mb-3" controlId="formBasicEmail">
                   <Form.Label>Email address</Form.Label>
                   <Form.Control 
                     type="email" 
                     placeholder="Enter email" 
                     className="custom-control"
+                    value={email}
+                    required
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                 </Form.Group>
 
@@ -47,6 +101,9 @@ function LoginSignin({ isOpen, clickModal }) {
                     type="password" 
                     placeholder="Password" 
                     className="custom-control"
+                    value={password}
+                    required
+                    onChange={(e) => setPassword(e.target.value)}
                   />
                 </Form.Group>
 
@@ -56,11 +113,11 @@ function LoginSignin({ isOpen, clickModal }) {
 
                 <Form.Group className="mt-3 text-center">
                   <Form.Text>
-                    <a href="#!" className="link-text">¿Has olvidado tu contraseña?</a>
+                    <a href="#!" className="link-text" onClick={openRecoveryModal}>¿Has olvidado tu contraseña?</a>
                   </Form.Text>
                   <br />
                   <Form.Text>
-                    <a href="#!" className="link-text" onClick={clickRegister}>Registro</a>
+                    <a href="#!" className="link-text" onClick={openRegisterModal}>Registro</a>
                   </Form.Text>
                 </Form.Group>
               </Form>
@@ -69,7 +126,8 @@ function LoginSignin({ isOpen, clickModal }) {
         </Modal.Body>
       </Modal>
 
-      <RegisterModal isOpen={isRegisterOpen} clickModal={closeRegister} />
+      <RegisterModal isOpen={isRegisterOpen} clickModal={closeRegisterModal} />
+      <RecovyPassword show={isRecoveryOpen} onHide={closeRecoveryModal} />
     </>
   );
 }

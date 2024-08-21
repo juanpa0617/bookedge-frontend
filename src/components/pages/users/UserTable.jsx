@@ -23,36 +23,41 @@ const UserTable = () => {
 
   return (
     <div >
-      <Button variant="primary" onClick={() => toggleUserModal()} className='mb-3 ' >Agregar Usuario</Button>
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Documento</th>
-            <th>Email</th>
-            <th>Teléfono</th>
-            <th>Rol</th>
-            <th>Acción</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map(user => (
-            <tr key={user.id}>
-              <td>{user.id}</td>
-              <td>{user.nombre}</td>
-              <td>{user.documento}</td>
-              <td>{user.email}</td>
-              <td>{user.telefono}</td>
-              <td>{user.rol}</td>
-              <td className='col-md-2 col-lg-2'>
-                <Button variant="warning" onClick={() => toggleUserModal(user)}>Editar</Button>{''}
-                <Button variant="danger" onClick={() => toggleConfirmDelete(user)}>Eliminar</Button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+      <div className="d-flex justify-content-end mb-3">
+      <Button variant="primary" onClick={() => toggleUserModal()} >
+        Agregar Usuario
+      </Button>
+    </div>
+      <Table striped bordered hover style={{ width: '50%', margin: 'auto', marginTop: '50px' }}>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Nombre</th>
+      <th>Documento</th>
+      <th>Email</th>
+      <th>Teléfono</th>
+      <th>Rol</th>
+      <th>Acción</th>
+    </tr>
+  </thead>
+  <tbody>
+    {users.map(user => (
+      <tr key={user.id}>
+        <td>{user.id}</td>
+        <td>{user.nombre}</td>
+        <td>{user.documento}</td>
+        <td>{user.email}</td>
+        <td>{user.telefono}</td>
+        <td>{user.rol}</td>
+        <td className='col-md-2 col-lg-6'>
+          <Button variant="warning" onClick={() => toggleUserModal(user)}>Editar</Button>{''}
+          <Button variant="danger" onClick={() => toggleConfirmDelete(user)}>Eliminar</Button>
+        </td>
+      </tr>
+    ))}
+  </tbody>
+</Table>
+
 
       <UserModal
         show={modalState.showUserModal}
