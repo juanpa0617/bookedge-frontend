@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import UserTable from './components/pages/users/UserTable';
-import Cabins from './components/pages/Cabins/Cabinstable';
+import CabinsPage from './components/pages/Cabins/CabinPage';
 import Navbar from './components/layout/Navbar';
 import Home from './components/pages/home';
 
@@ -12,7 +12,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/users" element={<UserTable />} />
-        <Route path="/cabins" element={<Cabins />} />
+        <Route path='/Cabins' element={<CabinsPage />}/>
         
         
       </Routes>

@@ -84,10 +84,10 @@ function LoginSignin({ isOpen, closeLoginModal }) {
               {error && <Alert variant="danger">{error}</Alert>}
               <Form onSubmit={handleLogin}>
                 <Form.Group className="mb-3" controlId="formBasicEmail">
-                  <Form.Label>Email address</Form.Label>
+                  <Form.Label>Correo electronico</Form.Label>
                   <Form.Control 
                     type="email" 
-                    placeholder="Enter email" 
+                    placeholder="ingresa el correo" 
                     className="custom-control"
                     value={email}
                     required
@@ -96,10 +96,10 @@ function LoginSignin({ isOpen, closeLoginModal }) {
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="formBasicPassword">
-                  <Form.Label>Password</Form.Label>
+                  <Form.Label>Contraseña</Form.Label>
                   <Form.Control 
                     type="password" 
-                    placeholder="Password" 
+                    placeholder="Contraseña" 
                     className="custom-control"
                     value={password}
                     required

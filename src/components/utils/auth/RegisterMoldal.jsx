@@ -3,7 +3,6 @@ import { Modal, Form, Button, Row, Col } from 'react-bootstrap';
 import './stylesLogin.css';
 
 function RegisterModal({ isOpen, clickModal }) {
-  // Estado del formulario y de los errores
   const [formData, setFormData] = useState({
     fullName: '',
     idNumber: '',
@@ -13,41 +12,44 @@ function RegisterModal({ isOpen, clickModal }) {
   });
   const [errors, setErrors] = useState({});
 
-  // Actualiza el estado del formulario
+  const validateForm = (name, value) => {
+    const errorMessages = {
+      fullName: 'El nombre debe tener al menos 8 caracteres.',
+      idNumber: 'El número de identificación debe tener al menos 4 dígitos y no contener letras.',
+      email: 'Por favor, ingrese un email válido.',
+      birthdate: 'Debes tener al menos 18 años para registrarte.',
+      password: 'La contraseña debe contener al menos 10 caracteres, una mayúscula, una minúscula, un número y un carácter especial.',
+    };
+
+    const validations = {
+      fullName: value.length >= 8,
+      idNumber: /^[0-9]{4,}$/.test(value),
+      email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
+      birthdate: value && new Date(value) <= new Date(new Date().setFullYear(new Date().getFullYear() - 18)),
+      password: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{10,}$/.test(value),
+    };
+
+    return validations[name] ? '' : errorMessages[name];
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
+    const error = validateForm(name, value);
+
     setFormData((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: error }));
   };
 
-  // Valida el formulario
-  const validateForm = () => {
-    const newErrors = {};
-
-    if (formData.fullName.length < 8) {
-      newErrors.fullName = 'El nombre debe tener al menos 8 caracteres.';
-    }
-    if (!/^[0-9]{4,}$/.test(formData.idNumber)) {
-      newErrors.idNumber = 'El número de identificación debe tener al menos 4 dígitos y no contener letras.';
-    }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Por favor, ingrese un email válido.';
-    }
-    if (!formData.birthdate) {
-      newErrors.birthdate = 'La fecha de nacimiento es obligatoria.';
-    } else if (new Date(formData.birthdate) >= new Date()) {
-      newErrors.birthdate = 'La fecha de nacimiento no puede ser mayor a la fecha actual.';
-    }
-    if (!/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{10,}$/.test(formData.password)) {
-      newErrors.password = 'La contraseña debe contener al menos 10 caracteres, una mayúscula, una minúscula, un número y un carácter especial.';
-    }
-
-    return newErrors;
-  };
-
-  // Maneja el registro
   const handleRegister = (e) => {
     e.preventDefault();
-    const formErrors = validateForm();
+    const formErrors = Object.keys(formData).reduce((acc, field) => {
+      const error = validateForm(field, formData[field]);
+      if (error) {
+        acc[field] = error;
+      }
+      return acc;
+    }, {});
+
     if (Object.keys(formErrors).length > 0) {
       setErrors(formErrors);
     } else {
