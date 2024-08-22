@@ -38,7 +38,7 @@ export default function Navbar() {
                 <NavLink className="nav-link" to="/users">Usuarios</NavLink>
               </li>
               <li className="nav-item">
-                <NavLink className="nav-link" to="/cabins">Cabañas</NavLink>
+                <NavLink className="nav-link" to="/Cabins">Cabañas</NavLink>
               </li>
             </ul>
           </div>
